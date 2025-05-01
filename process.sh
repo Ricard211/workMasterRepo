@@ -9,8 +9,7 @@ fi
 
 IMAGE_NAME=my-docker-image
 CONTAINER_NAME=my-container
-HASH_FILE="image-hash.txt"
-IMAGE_NAME="my-docker-image"
+HASH_FILE="/home/ricard/Documents/GitHub/workMasterRepo/image-hash.txt"
 
 echo "🛠 Building Docker image..."
 docker build -t "$IMAGE_NAME" .
