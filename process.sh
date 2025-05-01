@@ -21,6 +21,7 @@ fi
 
 echo "Stopping and removing container..."
 docker stop $CONTAINER_NAME
+sleep 5
 docker rm $CONTAINER_NAME
 
 if docker ps -aq -f name=$CONTAINER_NAME > /dev/null; then
