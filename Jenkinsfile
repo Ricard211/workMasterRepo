@@ -7,7 +7,7 @@ pipeline {
       steps {
         sh 'node --version'
         sh 'ls -l'
-        sh '.process.sh'
+        sh 'sh process.sh'
       }
     }
   }
