@@ -11,13 +11,21 @@ IMAGE_NAME=my-docker-image
 CONTAINER_NAME=my-container
 HASH_FILE="image-hash.txt"
 
-echo "🛠 Building Docker image..."
-# Capture the image ID from the build output
-IMAGE_ID=$(docker build -t "$IMAGE_NAME" . | tee /dev/tty | awk '/Successfully built/ {print $NF}')
+HASH_FILE="image-hash.txt"
 
-# Save the image ID to a file
-echo "$IMAGE_ID" > "$HASH_FILE"
-echo "📦 Image hash written to $HASH_FILE: $IMAGE_ID"
+echo "🛠 Building Docker image..."
+docker build -t "$IMAGE_NAME" .
+
+# Get full sha256 digest (requires image to be pushed or locally content-addressed)
+DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE_NAME" 2>/dev/null || true)
+
+# If no digest is found (e.g., image hasn't been pushed), fallback to image ID
+if [ -z "$DIGEST" ]; then
+    DIGEST="sha256:$(docker images --no-trunc --format '{{.ID}}' "$IMAGE_NAME" | head -n 1)"
+fi
+
+echo "$DIGEST" > "$HASH_FILE"
+echo "📦 SHA256 digest written to $HASH_FILE: $DIGEST"
 
 echo "🚀 Running Docker container..."
 docker run -d -p 80:80 --name "$CONTAINER_NAME" "$IMAGE_NAME"
