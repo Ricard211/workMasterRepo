@@ -1,13 +1,18 @@
 pipeline {
-  agent any
-  stages {
-    stage('Test') {
-      steps {
-        sh 'docker version'
-        sh 'node --version'
-        sh 'ls -l'
-        sh 'sh process.sh'
-      }
+    agent any
+    stages {
+        stage('Run process.sh') {
+            steps {
+                sh '''
+                    chmod +x process.sh
+                    bash process.sh
+                '''
+            }
+        }
     }
-  }
+    post {
+        always {
+            archiveArtifacts artifacts: 'image-hash.txt', fingerprint: true
+        }
+    }
 }
