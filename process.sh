@@ -1,5 +1,11 @@
-#!/bin/bash
-set -euo pipefail
+#!/bin/sh
+
+# Check if running in bash for pipefail support
+if [ -n "$BASH_VERSION" ]; then
+    set -euo pipefail
+else
+    set -eu
+fi
 
 IMAGE_NAME=my-docker-image
 CONTAINER_NAME=my-container
@@ -35,7 +41,7 @@ fi
 echo "🧼 Removing Docker image..."
 docker rmi "$IMAGE_NAME" || true
 
-# Confirm image removal by image name (not ID, for reliability)
+# Confirm image removal by image name
 if docker images --format '{{.Repository}}' | grep -q "^${IMAGE_NAME}$"; then
     echo "❌ Image is not removed"
     exit 1
