@@ -1,15 +1,21 @@
 #!/bin/sh
 
-# Check if running in bash for pipefail support
+# Compatibility with both bash and sh
 if [ -n "$BASH_VERSION" ]; then
     set -euo pipefail
 else
     set -eu
 fi
 
-IMAGE_NAME=my-docker-image
-CONTAINER_NAME=my-container
-HASH_FILE="image-hash.txt"
+IMAGE_NAME="my-docker-image"
+CONTAINER_NAME="my-container"
+
+# Detect if running in Jenkins by checking environment variable
+if [ -n "${JENKINS_HOME:-}" ]; then
+    HASH_FILE="${WORKSPACE:-.}/image-hash.txt"
+else
+    HASH_FILE="./image-hash.txt"
+fi
 
 echo "🛠 Building Docker image..."
 docker build -t "$IMAGE_NAME" .
@@ -18,14 +24,12 @@ echo "🔍 Getting full image ID..."
 IMAGE_ID=$(docker images --no-trunc --format '{{.Repository}} {{.ID}}' | grep "^$IMAGE_NAME " | awk '{print $2}')
 
 if [ -n "$IMAGE_ID" ]; then
-    echo "✅ Image ID: $IMAGE_ID"
-    echo "$IMAGE_ID" > "$WORKSPACE/image-hash.txt"
+    echo "$IMAGE_ID" > "$HASH_FILE"
     echo "📦 Image hash written to $HASH_FILE: $IMAGE_ID"
 else
     echo "❌ Could not retrieve image ID for $IMAGE_NAME"
     exit 1
 fi
-
 
 echo "🚀 Running Docker container..."
 docker run -d -p 80:80 --name "$CONTAINER_NAME" "$IMAGE_NAME"
@@ -62,4 +66,3 @@ else
 fi
 
 echo "🎉 All operations completed successfully."
-echo "🧹 Cleaning up..."
