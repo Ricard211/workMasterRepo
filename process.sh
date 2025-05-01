@@ -9,7 +9,7 @@ fi
 
 IMAGE_NAME=my-docker-image
 CONTAINER_NAME=my-container
-HHASH_FILE="image-hash.txt"
+HASH_FILE="image-hash.txt"
 
 echo "🛠 Building Docker image..."
 docker build -t "$IMAGE_NAME" .
