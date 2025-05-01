@@ -1,36 +1,43 @@
 #!/bin/bash
+set -e  # Exit script if any command fails
 
-# Build the Docker image
-docker build -t my-docker-image .
+IMAGE_NAME=my-docker-image
+CONTAINER_NAME=my-container
 
-# Run the Docker container
-docker run -d -p 80:80 --name my-container my-docker1
-# Wait for the container to be fully up and running
+echo "Building Docker image..."
+docker build -t $IMAGE_NAME .
+
+echo "Running Docker container..."
+docker run -d -p 80:80 --name $CONTAINER_NAME $IMAGE_NAME
+
 sleep 10
-# Check if the container is running
-if [ "$(docker ps -q -f name=my-container)" ]; then
-    echo "Container is running"
+
+if docker ps -q -f name=$CONTAINER_NAME > /dev/null; then
+    echo "✅ Container is running"
 else
-    echo "Container is not running"
+    echo "❌ Container is not running"
     exit 1
 fi
 
-docker stop my-container
-docker rm my-container
-# Check if the container is removed
-if [ "$(docker ps -aq -f name=my-container)" ]; then
-    echo "Container is not removed"
+echo "Stopping and removing container..."
+docker stop $CONTAINER_NAME
+docker rm $CONTAINER_NAME
+
+if docker ps -aq -f name=$CONTAINER_NAME > /dev/null; then
+    echo "❌ Container is not removed"
     exit 1
 else
-    echo "Container is removed"
+    echo "✅ Container is removed"
 fi
 
-docker rmi my-docker-image
-# Check if the image is removed
-if [ "$(docker images -q my-docker-image)" ]; then
-    echo "Image is not removed"
+echo "Removing Docker image..."
+docker rmi $IMAGE_NAME
+
+if docker images -q $IMAGE_NAME > /dev/null; then
+    echo "❌ Image is not removed"
     exit 1
 else
-    echo "Image is removed"
+    echo "✅ Image is removed"
 fi
-
+echo "All operations completed successfully."
+echo "Cleaning up..."
