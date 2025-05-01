@@ -18,6 +18,7 @@ echo "🔍 Getting full image ID..."
 IMAGE_ID=$(docker images --no-trunc --format '{{.Repository}} {{.ID}}' | grep "^$IMAGE_NAME " | awk '{print $2}')
 
 if [ -n "$IMAGE_ID" ]; then
+    echo "✅ Image ID: $IMAGE_ID"
     echo "$IMAGE_ID" > "$WORKSPACE/image-hash.txt"
     echo "📦 Image hash written to $HASH_FILE: $IMAGE_ID"
 else
