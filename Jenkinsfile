@@ -9,13 +9,15 @@ pipeline {
                 '''
             }
         }
+
         stage('Compare with previous hash') {
             steps {
                 script {
-                    if (currentBuild.previousBuild != null) {
+                    def prevBuild = currentBuild.rawBuild.getPreviousCompletedBuild()
+                    if (prevBuild != null) {
                         copyArtifacts(
                             projectName: env.JOB_NAME,
-                            selector: lastSuccessful(),
+                            selector: [$class: 'SpecificBuildSelector', buildNumber: prevBuild.getNumber().toString()],
                             filter: 'image-hash.txt',
                             target: 'previous'
                         )
