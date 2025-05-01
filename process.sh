@@ -9,22 +9,27 @@ fi
 
 IMAGE_NAME=my-docker-image
 CONTAINER_NAME=my-container
-HASH_FILE="image-hash.txt"
+HHASH_FILE="image-hash.txt"
 
 echo "🛠 Building Docker image..."
 docker build -t "$IMAGE_NAME" .
 
-# Get the full local SHA256 image ID
-DIGEST=$(docker images --no-trunc --format '{{.ID}}' "$IMAGE_NAME" | head -n 1)
+echo "🔍 Verifying built image exists..."
+docker images "$IMAGE_NAME"
 
-# Check and save
-if [ -n "$DIGEST" ]; then
-    echo "$DIGEST" > "$HASH_FILE"
-    echo "📦 Image digest written to $HASH_FILE: $DIGEST"
+echo "🔍 Getting full image ID..."
+IMAGE_ID=$(docker images --no-trunc --format '{{.Repository}} {{.ID}}' | grep "^$IMAGE_NAME " | awk '{print $2}')
+
+echo "DEBUG: Retrieved IMAGE_ID = $IMAGE_ID"
+
+if [ -n "$IMAGE_ID" ]; then
+    echo "$IMAGE_ID" > "$HASH_FILE"
+    echo "📦 Image digest written to $HASH_FILE: $IMAGE_ID"
 else
-    echo "❌ Failed to retrieve image digest"
+    echo "❌ Could not retrieve image ID for $IMAGE_NAME"
     exit 1
 fi
+
 
 
 echo "🚀 Running Docker container..."
