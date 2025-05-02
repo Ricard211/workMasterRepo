@@ -34,6 +34,33 @@ pipeline {
             }
         }
 
+        stage('Run DAST (ZAP Full Scan for all containers)') {
+            steps {
+                sh '''
+                    mkdir -p reports
+
+                    for PORT in 8081 8082 8083 8084 8085; do
+                    docker run --rm -u zap \
+                        --network="host" \
+                        -v $PWD/reports:/zap/reports \
+                        owasp/zap2docker-stable zap-full-scan.py \
+                        -t http://localhost:$PORT \
+                        -r "zap-report-$PORT.html" \
+                        -J "zap-report-$PORT.json" || true
+                    done
+                '''
+            }
+        }
+
+        stage('Generate Combined Security Report') {
+            steps {
+                sh '''
+                    chmod +x generate_unified_report.sh
+                    bash generate_unified_report.sh
+                '''
+            }
+        }
+
         stage('Compare hashes') {
             steps {
                 script {
@@ -64,6 +91,7 @@ pipeline {
             archiveArtifacts artifacts: 'image-hash.txt', fingerprint: true
             archiveArtifacts artifacts: 'reports/semgrep-report.json'
             archiveArtifacts artifacts: 'reports/semgrep-report.html'
+            archiveArtifacts artifacts: 'reports/security-report.html'
         }
     }
 }
