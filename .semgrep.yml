@@ -1,0 +1,48 @@
+rules:
+  - id: inline-script-tag
+    message: "Avoid using inline <script> tags — use external JS files for better security and maintainability."
+    severity: WARNING
+    languages: [html]
+    pattern: '<script>'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: javascript-link
+    message: "Avoid using 'javascript:' in href attributes — this can lead to XSS vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'href="javascript:*"'
+    metadata:
+      category: security
+      cwe: "CWE-79: Cross-site Scripting (XSS)"
+
+  - id: insecure-form-method
+    message: "Form should use POST method to avoid leaking sensitive data via GET."
+    severity: WARNING
+    languages: [html]
+    pattern: '<form>'
+    metadata:
+      category: security
+      cwe: "CWE-598: Information Exposure Through Query Strings in GET Request"
+
+  - id: inline-event-handler
+    message: "Avoid inline event handlers (e.g., onclick) in HTML — move to JS files."
+    severity: WARNING
+    languages: [html]
+    pattern-either:
+      - pattern: 'onclick="..."'
+      - pattern: 'onload="..."'
+      - pattern: 'onmouseover="..."'
+    metadata:
+      category: security
+      cwe: "CWE-79: Cross-site Scripting (XSS)"
+
+  - id: password-autocomplete
+    message: "Input type=password should disable autocomplete."
+    severity: WARNING
+    languages: [html]
+    pattern: '<input type="password">'
+    metadata:
+      category: security
+      cwe: "CWE-524: Use of Cacheable Password Forms"
