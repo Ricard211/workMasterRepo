@@ -34,11 +34,16 @@ pipeline {
             }
         }
 
-        stage('Run DAST (OWASP ZAP Full Scan)') {
+        stage('Run DAST (ZAP with GHCR inline login)') {
             steps {
-                echo "🚀 Scanning all 5 running containers with local ZAP image..."
+                echo "🚀 Authenticating to GHCR and running ZAP scans (no Jenkins creds)..."
 
                 sh '''
+                    GITHUB_USER=Ricard211
+                    GITHUB_TOKEN=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
+
+                    echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USER" --password-stdin
+
                     mkdir -p reports
 
                     for i in 1 2 3 4 5; do
@@ -47,15 +52,16 @@ pipeline {
 
                     docker run --rm --network="host" \
                         -v "$PWD/reports:/zap/reports" \
-                        zap-full-scan:local \
+                        ghcr.io/zaproxy/zap-full-scan:latest \
                         -t http://localhost:$PORT \
-                        -r "zap-report-$PORT.html" \
-                        -J "zap-report-$PORT.json" || true
+                        -r zap-report-$PORT.html \
+                        -J zap-report-$PORT.json || true
                     done
+
+                    docker logout ghcr.io
                 '''
             }
         }
-
 
         stage('Generate Combined Security Report') {
             steps {
