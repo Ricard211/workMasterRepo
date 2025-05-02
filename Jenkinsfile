@@ -56,8 +56,9 @@ pipeline {
             }
         }
 
-        stage('Generate Combined Security Report') {
+        stage('Generate Unified Security Report') {
             steps {
+                echo "📊 Combining Semgrep + ZAP into unified HTML..."
                 sh '''
                     chmod +x generate_unified_report.sh
                     bash generate_unified_report.sh

@@ -22,6 +22,7 @@ cat <<EOF > "$OUTPUT"
     .issue { border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom: 10px; }
     .severity { font-weight: bold; color: darkred; }
     .path { font-family: monospace; }
+    h2, h3 { margin-top: 1em; }
   </style>
 </head>
 <body>
@@ -41,23 +42,25 @@ if [ -s "$SEMGREP" ]; then
     echo "<div class='issue'>
       <div class='severity'>[$severity]</div>
       <div class='path'>$path:$line</div>
-      <div>$rule</div>
+      <div><strong>Rule:</strong> $rule</div>
       <div>$message</div>
     </div>" >> "$OUTPUT"
   done
   echo "</div>" >> "$OUTPUT"
 else
-  echo "<h2>Semgrep: No findings or report missing.</h2>" >> "$OUTPUT"
+  echo "<div class='section'><h2>Semgrep: No findings or report missing.</h2></div>" >> "$OUTPUT"
 fi
 
-# ZAP Section (loop through all zap-report-*.json)
+# ZAP Section
 echo "<div class='section'><h2>ZAP Findings</h2>" >> "$OUTPUT"
+ZAP_FOUND=false
 
-ZAP_REPORTS_FOUND=false
 for zapfile in "$ZAP_DIR"/$ZAP_JSON_PATTERN; do
   if [ -s "$zapfile" ]; then
-    ZAP_REPORTS_FOUND=true
-    echo "<h3>$(basename "$zapfile")</h3>" >> "$OUTPUT"
+    ZAP_FOUND=true
+    PORT=$(echo "$zapfile" | grep -o '[0-9]\{4,5\}')
+    echo "<h3>Container on port $PORT</h3>" >> "$OUTPUT"
+
     jq -c '.site[].alerts[]?' "$zapfile" | while read -r alert; do
       name=$(echo "$alert" | jq -r '.alert')
       risk=$(echo "$alert" | jq -r '.risk')
@@ -67,20 +70,18 @@ for zapfile in "$ZAP_DIR"/$ZAP_JSON_PATTERN; do
       echo "<div class='issue'>
         <div class='severity'>[$risk]</div>
         <div class='path'>$url</div>
-        <div>$name</div>
+        <div><strong>$name</strong></div>
         <div>$desc</div>
       </div>" >> "$OUTPUT"
     done
   fi
 done
 
-if [ "$ZAP_REPORTS_FOUND" = false ]; then
+if [ "$ZAP_FOUND" = false ]; then
   echo "<p>No ZAP findings found in any reports.</p>" >> "$OUTPUT"
 fi
 
-echo "</div>" >> "$OUTPUT"
+# Close HTML
+echo "</div></body></html>" >> "$OUTPUT"
 
-# End HTML
-echo "</body></html>" >> "$OUTPUT"
-
-echo "✅ Combined security report written to $OUTPUT"
+echo "✅ Report generated: $OUTPUT"
