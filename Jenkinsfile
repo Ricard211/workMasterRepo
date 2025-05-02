@@ -4,8 +4,10 @@ pipeline {
     stages {
         stage('Run SAST (Semgrep)') {
             steps {
-                echo "🔐 Running SAST with Semgrep and generating report..."
+                echo "🔐 Running Semgrep and generating reports..."
                 sh '''
+                    chmod +x convert_semgrep_report.sh
+
                     mkdir -p reports
 
                     docker run --rm -v $PWD:/src returntocorp/semgrep semgrep \
@@ -14,9 +16,13 @@ pipeline {
                         --json
 
                     bash convert_semgrep_report.sh
+
+                    echo "📁 Final reports folder:"
+                    ls -l reports
                 '''
-    }
-}
+            }
+        }
+
 
         stage('Build Docker images') {
             steps {
