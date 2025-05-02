@@ -58,6 +58,15 @@ pipeline {
             }
         }
 
+        stage('Merge ZAP JSON Reports') {
+            steps {
+                echo "📦 Merging ZAP JSON reports into one file..."
+                sh '''
+                    jq -s '{ site: map(.site[]) }' reports/zap-report-*.json > reports/zap-report-combined.json
+                '''
+            }
+        }
+
         stage('Generate Unified Security Report') {
             steps {
                 echo "📊 Combining Semgrep + ZAP into unified HTML..."
@@ -99,8 +108,7 @@ pipeline {
             archiveArtifacts artifacts: 'reports/semgrep-report.json'
             archiveArtifacts artifacts: 'reports/semgrep-report.html'
             archiveArtifacts artifacts: 'reports/security-report.html'
-            archiveArtifacts artifacts: 'reports/zap-report-*.json'
-            archiveArtifacts artifacts: 'reports/zap-report-*.html'
+            archiveArtifacts artifacts: 'reports/zap-report-combined.json'
         }
     }
 }
