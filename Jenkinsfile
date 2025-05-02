@@ -96,6 +96,8 @@ pipeline {
             archiveArtifacts artifacts: 'reports/semgrep-report.json'
             archiveArtifacts artifacts: 'reports/semgrep-report.html'
             archiveArtifacts artifacts: 'reports/security-report.html'
+            archiveArtifacts artifacts: 'reports/zap-report-*.json'
+            archiveArtifacts artifacts: 'reports/zap-report-*.html'
         }
     }
 }
