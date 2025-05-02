@@ -36,7 +36,7 @@ pipeline {
 
         stage('Run DAST (OWASP ZAP Full Scan)') {
             steps {
-                echo "🌐 Scanning containers with fixed mount path for write access..."
+                echo "🌐 Scanning containers using zaproxy/zap-stable with dual mounts..."
 
                 sh '''
                     mkdir -p reports
@@ -46,6 +46,7 @@ pipeline {
                     echo "🔍 Scanning http://localhost:$PORT..."
 
                     docker run --rm --network="host" \
+                        -v "$PWD/reports:/zap/wrk" \
                         -v "$PWD/reports:/tmp/reports" \
                         zaproxy/zap-stable \
                         zap-full-scan.py \
