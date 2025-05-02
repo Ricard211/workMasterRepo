@@ -1,68 +1,93 @@
 #!/bin/sh
 
-# Compatibility with both bash and sh
+# Enable strict mode if bash
 if [ -n "$BASH_VERSION" ]; then
     set -euo pipefail
 else
     set -eu
 fi
 
-IMAGE_NAME="my-docker-image"
-CONTAINER_NAME="my-container"
-
-# Detect if running in Jenkins by checking environment variable
+# Detect if running in Jenkins
 if [ -n "${JENKINS_HOME:-}" ]; then
-    HASH_FILE="${WORKSPACE:-.}/image-hash.txt"
+    BASE_DIR="${WORKSPACE:-.}"
 else
-    HASH_FILE="./image-hash.txt"
+    BASE_DIR="."
 fi
 
-echo "🛠 Building Docker image..."
-docker build -t "$IMAGE_NAME" .
+TOTAL=5
+START_PORT=8081
+HASH_FILE="$BASE_DIR/image-hash.txt"
 
-echo "🔍 Getting full image ID..."
-IMAGE_ID=$(docker images --no-trunc --format '{{.Repository}} {{.ID}}' | grep "^$IMAGE_NAME " | awk '{print $2}')
+# Clear the hash file
+> "$HASH_FILE"
 
-if [ -n "$IMAGE_ID" ]; then
-    echo "$IMAGE_ID" > "$HASH_FILE"
-    echo "📦 Image hash written to $HASH_FILE: $IMAGE_ID"
-else
-    echo "❌ Could not retrieve image ID for $IMAGE_NAME"
-    exit 1
-fi
+echo "📦 Starting multi-image Docker build & run..."
 
-echo "🚀 Running Docker container..."
-docker run -d -p 80:80 --name "$CONTAINER_NAME" "$IMAGE_NAME"
+for i in $(seq 1 $TOTAL); do
+    IMAGE_NAME="my-docker-image-$i"
+    CONTAINER_NAME="my-container-$i"
+    DOCKERFILE="Dockerfile.$i"
+    PORT=$((START_PORT + i - 1))
 
+    echo "🔨 Building $IMAGE_NAME from $DOCKERFILE..."
+    docker build -t "$IMAGE_NAME" -f "$DOCKERFILE" .
+
+    echo "🔍 Getting image ID for $IMAGE_NAME..."
+    IMAGE_ID=$(docker images --no-trunc --format '{{.Repository}} {{.ID}}' | grep "^$IMAGE_NAME " | awk '{print $2}')
+    if [ -n "$IMAGE_ID" ]; then
+        echo "$IMAGE_NAME: $IMAGE_ID" >> "$HASH_FILE"
+        echo "✅ Wrote hash for $IMAGE_NAME to $HASH_FILE"
+    else
+        echo "❌ Failed to get image ID for $IMAGE_NAME"
+        exit 1
+    fi
+
+    echo "🚀 Running container $CONTAINER_NAME on port $PORT..."
+    docker run -d -p "$PORT":80 --name "$CONTAINER_NAME" "$IMAGE_NAME"
+
+    sleep 5
+
+    echo "🔍 Checking if $CONTAINER_NAME is running..."
+    if docker ps --format '{{.Names}}' | grep -q "^$CONTAINER_NAME$"; then
+        echo "✅ $CONTAINER_NAME is running"
+    else
+        echo "❌ $CONTAINER_NAME failed to start"
+        exit 1
+    fi
+done
+
+echo "✅ All containers running. Waiting 10 seconds..."
 sleep 10
 
-echo "🔍 Checking if container is running..."
-if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-    echo "✅ Container is running"
-else
-    echo "❌ Container is not running"
-    exit 1
-fi
+echo "🧹 Stopping and removing all containers and images..."
 
-echo "🧹 Stopping and removing container..."
-docker stop "$CONTAINER_NAME" || true
-docker rm -f "$CONTAINER_NAME" || true
+for i in $(seq 1 $TOTAL); do
+    IMAGE_NAME="my-docker-image-$i"
+    CONTAINER_NAME="my-container-$i"
 
-if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-    echo "❌ Container is not removed"
-    exit 1
-else
-    echo "✅ Container is removed"
-fi
+    echo "🛑 Stopping $CONTAINER_NAME..."
+    docker stop "$CONTAINER_NAME" || true
 
-echo "🧼 Removing Docker image..."
-docker rmi "$IMAGE_NAME" || true
+    echo "🗑 Removing $CONTAINER_NAME..."
+    docker rm -f "$CONTAINER_NAME" || true
 
-if docker images --format '{{.Repository}}' | grep -q "^${IMAGE_NAME}$"; then
-    echo "❌ Image is not removed"
-    exit 1
-else
-    echo "✅ Image is removed"
-fi
+    if docker ps -a --format '{{.Names}}' | grep -q "^$CONTAINER_NAME$"; then
+        echo "❌ $CONTAINER_NAME was not removed"
+        exit 1
+    else
+        echo "✅ $CONTAINER_NAME removed"
+    fi
 
-echo "🎉 All operations completed successfully."
+    echo "🧼 Removing image $IMAGE_NAME..."
+    docker rmi "$IMAGE_NAME" || true
+
+    if docker images --format '{{.Repository}}' | grep -q "^$IMAGE_NAME$"; then
+        echo "❌ $IMAGE_NAME was not removed"
+        exit 1
+    else
+        echo "✅ $IMAGE_NAME removed"
+    fi
+done
+
+echo "🎉 All containers and images cleaned up successfully."
+echo "📄 Final hash file written to: $HASH_FILE"
