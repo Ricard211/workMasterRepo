@@ -1,21 +1,23 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-set -eu
+CHANGED="changed-containers.txt"
 
-TOTAL=5
+if [ ! -f "$CHANGED" ] || [ ! -s "$CHANGED" ]; then
+  echo "ℹ️ No containers to clean up (no changes detected)."
+  exit 0
+fi
 
-for i in $(seq 1 $TOTAL); do
-    IMAGE_NAME="my-docker-image-$i"
-    CONTAINER_NAME="my-container-$i"
+while read i; do
+  CONTAINER="my-container-$i"
+  IMAGE="my-docker-image-$i"
 
-    echo "🛑 Stopping $CONTAINER_NAME..."
-    docker stop "$CONTAINER_NAME" || true
+  echo "🛑 Stopping $CONTAINER..."
+  docker stop "$CONTAINER" || true
 
-    echo "🗑 Removing $CONTAINER_NAME..."
-    docker rm -f "$CONTAINER_NAME" || true
+  echo "🗑 Removing $CONTAINER..."
+  docker rm -f "$CONTAINER" || true
 
-    echo "🧼 Removing image $IMAGE_NAME..."
-    docker rmi "$IMAGE_NAME" || true
-done
-
-echo "✅ All containers and images removed"
+  echo "🧼 Removing image $IMAGE..."
+  docker rmi "$IMAGE" || true
+done < "$CHANGED"

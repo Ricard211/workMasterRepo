@@ -54,27 +54,28 @@ pipeline {
 
         stage('Run DAST (OWASP ZAP Full Scan)') {
             steps {
-                echo "🌐 Scanning containers using zaproxy/zap-stable with dual mounts..."
+                echo "🌐 Scanning only changed containers..."
 
                 sh '''
-                    mkdir -p reports
+                mkdir -p reports
 
-                    for i in 1 2 3 4 5; do
+                while read i; do
                     PORT=$((8080 + i))
-                    echo "🔍 Scanning http://localhost:$PORT..."
+                    echo "🔍 Scanning container $i on http://localhost:$PORT..."
 
                     docker run --rm --network="host" \
-                        -v "$PWD/reports:/zap/wrk" \
-                        -v "$PWD/reports:/tmp/reports" \
-                        zaproxy/zap-stable \
-                        zap-full-scan.py \
-                        -t http://localhost:$PORT \
-                        -r /tmp/reports/zap-report-$PORT.html \
-                        -J /tmp/reports/zap-report-$PORT.json || true
-                    done
+                    -v "$PWD/reports:/zap/wrk" \
+                    -v "$PWD/reports:/tmp/reports" \
+                    zaproxy/zap-stable \
+                    zap-full-scan.py \
+                    -t http://localhost:$PORT \
+                    -r /tmp/reports/zap-report-$PORT.html \
+                    -J /tmp/reports/zap-report-$PORT.json || true
+                done < changed-containers.txt
                 '''
             }
         }
+
 
         stage('Merge ZAP JSON Reports') {
             steps {
