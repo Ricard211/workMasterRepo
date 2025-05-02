@@ -2,21 +2,21 @@ pipeline {
     agent any
 
     stages {
-        stage('Build images and generate hashes') {
+        stage('Build Docker images') {
             steps {
-                sh '''
-                    chmod +x process.sh
-                    bash process.sh
-                '''
+                sh 'bash build_images.sh'
             }
         }
 
-        stage('Compare hashes individually') {
+        stage('Run containers') {
+            steps {
+                sh 'bash run_containers.sh'
+            }
+        }
+
+        stage('Compare hashes') {
             steps {
                 script {
-                    def previousExists = false
-
-                    // Try to copy previous image-hash.txt
                     try {
                         copyArtifacts(
                             projectName: env.JOB_NAME,
@@ -24,37 +24,17 @@ pipeline {
                             filter: 'image-hash.txt',
                             target: 'previous'
                         )
-                        previousExists = true
+                        sh 'bash compare_hashes.sh'
                     } catch (Exception e) {
-                        echo "ℹ️ No previous hash file available for comparison."
-                    }
-
-                    // Compare line-by-line
-                    if (previousExists) {
-                        sh '''
-                            echo "🔍 Comparing image hashes one by one..."
-
-                            while IFS= read -r current_line || [ -n "$current_line" ]; do
-                                image_name=$(echo "$current_line" | cut -d':' -f1 | xargs)
-                                current_hash=$(echo "$current_line" | cut -d':' -f2- | xargs)
-
-                                # Find matching image line in previous file
-                                prev_line=$(grep "^$image_name:" previous/image-hash.txt || true)
-
-                                if [ -n "$prev_line" ]; then
-                                    prev_hash=$(echo "$prev_line" | cut -d':' -f2- | xargs)
-                                    if [ "$current_hash" = "$prev_hash" ]; then
-                                        echo "✅ $image_name hash MATCHES previous build."
-                                    else
-                                        echo "⚠️ $image_name hash CHANGED!"
-                                    fi
-                                else
-                                    echo "🆕 $image_name is NEW in this build."
-                                fi
-                            done < image-hash.txt
-                        '''
+                        echo "ℹ️ No previous build hash to compare."
                     }
                 }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                sh 'bash stop_and_clean.sh'
             }
         }
     }
