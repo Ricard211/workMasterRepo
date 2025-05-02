@@ -37,16 +37,18 @@ pipeline {
         stage('Run DAST (OWASP ZAP Full Scan)') {
             steps {
                 echo "🌐 Running ZAP scans using zaproxy/zap-stable..."
+
                 sh '''
                     mkdir -p reports
+                    chmod -R a+w reports  # 🔑 allow ZAP container to write here
 
                     for i in 1 2 3 4 5; do
-                      PORT=$((8080 + i))
-                      echo "🔍 Scanning http://localhost:$PORT..."
+                    PORT=$((8080 + i))
+                    echo "🔍 Scanning http://localhost:$PORT..."
 
-                      docker run --rm --network="host" \
+                    docker run --rm --network="host" \
                         -v "$PWD/reports:/zap/wrk" \
-                        -t zaproxy/zap-stable \
+                        zaproxy/zap-stable \
                         zap-full-scan.py \
                         -t http://localhost:$PORT \
                         -r zap-report-$PORT.html \
@@ -55,6 +57,7 @@ pipeline {
                 '''
             }
         }
+
 
         stage('Generate Unified Security Report') {
             steps {
