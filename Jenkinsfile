@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-        
         stage('Run SAST (Semgrep)') {
             steps {
                 echo "🔐 Running Semgrep (custom + OWASP) on src/html1 to html5..."
@@ -16,14 +15,12 @@ pipeline {
                         --config=p/owasp-top-ten \
                         --json \
                         --output /src/reports/semgrep-report.json \
-                        --exit-zero \
-                        /src/src/html1 /src/src/html2 /src/src/html3 /src/src/html4 /src/src/html5
+                        /src/src/html1 /src/src/html2 /src/src/html3 /src/src/html4 /src/src/html5 || true
 
                     bash convert_semgrep_report.sh
                 '''
             }
         }
-
 
         stage('Build Docker images') {
             steps {
