@@ -28,6 +28,24 @@ pipeline {
             }
         }
 
+        stage('Compare hashes') {
+            steps {
+                script {
+                    try {
+                        copyArtifacts(
+                            projectName: env.JOB_NAME,
+                            selector: [$class: 'StatusBuildSelector', stable: false, successful: true],
+                            filter: 'image-hash.txt',
+                            target: 'previous'
+                        )
+                        sh 'bash compare_hashes.sh'
+                    } catch (Exception e) {
+                        echo "ℹ️ No previous build hash to compare."
+                    }
+                }
+            }
+        }
+
         stage('Run containers') {
             steps {
                 sh 'bash run_containers.sh'
@@ -74,24 +92,6 @@ pipeline {
                     chmod +x generate_unified_report.sh
                     bash generate_unified_report.sh
                 '''
-            }
-        }
-
-        stage('Compare hashes') {
-            steps {
-                script {
-                    try {
-                        copyArtifacts(
-                            projectName: env.JOB_NAME,
-                            selector: [$class: 'StatusBuildSelector', stable: false, successful: true],
-                            filter: 'image-hash.txt',
-                            target: 'previous'
-                        )
-                        sh 'bash compare_hashes.sh'
-                    } catch (Exception e) {
-                        echo "ℹ️ No previous build hash to compare."
-                    }
-                }
             }
         }
 
