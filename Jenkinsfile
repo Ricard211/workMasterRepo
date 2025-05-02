@@ -34,16 +34,20 @@ pipeline {
             }
         }
 
-        stage('Run DAST (ZAP Full Scan for all containers)') {
+        stage('Run DAST (OWASP ZAP - Full Scan for 5 containers)') {
             steps {
+                echo "🌐 Running OWASP ZAP full scans on all 5 containers..."
+
                 sh '''
                     mkdir -p reports
 
                     for PORT in 8081 8082 8083 8084 8085; do
-                    docker run --rm -u zap \
-                        --network="host" \
-                        -v $PWD/reports:/zap/reports \
-                        owasp/zap2docker-stable zap-full-scan.py \
+                    echo "📡 Scanning container on port $PORT..."
+
+                    docker run --rm --network="host" \
+                        -v "$PWD/reports:/zap/reports" \
+                        owasp/zap2docker-stable \
+                        zap-full-scan.py \
                         -t http://localhost:$PORT \
                         -r "zap-report-$PORT.html" \
                         -J "zap-report-$PORT.json" || true
