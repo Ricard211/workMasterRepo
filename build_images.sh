@@ -24,12 +24,17 @@ for FOLDER in $HTML_DIRS; do
     i=$((i+1))
 done
 
-## Build old-red-stream PHP app
+# Build old-red-stream PHP app (as container 6)
 IMAGE_NAME="my-docker-image-6"
-APP_DIR="php-app"  # or '.' if it’s in root
+APP_DIR="php-app"
+
+APP_HASH=$(find $APP_DIR -type f -exec sha256sum {} \; | sort | sha256sum | awk '{print $1}')
 
 echo "🔨 Building $IMAGE_NAME from $APP_DIR..."
-docker build -t "$IMAGE_NAME" "$APP_DIR"
+docker build -t "$IMAGE_NAME" \
+  --build-arg APP_DIR=$APP_DIR \
+  --label content-hash=$APP_HASH \
+  -f Dockerfile .
 
 IMAGE_ID=$(docker images --no-trunc --format '{{.Repository}} {{.ID}}' | grep "^$IMAGE_NAME " | awk '{print $2}')
 echo "$IMAGE_NAME: $IMAGE_ID" >> "$HASH_FILE"
