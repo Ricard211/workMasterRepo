@@ -26,8 +26,8 @@ for FOLDER in $HTML_DIRS; do
     i=$((i+1))
 done
 
-# Build PHP app (container 6)
-IMAGE_NAME="my-docker-image-6"
+# Now PHP app uses next available index
+IMAGE_NAME="my-docker-image-$i"
 APP_DIR="php-app"
 APP_HASH=$(find "$APP_DIR" -type f -exec sha256sum {} \; | sort | sha256sum | awk '{print $1}')
 
@@ -40,4 +40,3 @@ docker build -t "$IMAGE_NAME" \
 echo "$IMAGE_NAME: $APP_HASH" >> "$HASH_FILE"
 echo "✅ Wrote content hash for $IMAGE_NAME"
 
-echo "📄 All hashes written to $HASH_FILE"
