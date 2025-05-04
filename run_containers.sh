@@ -1,17 +1,21 @@
 #!/bin/bash
 set -e
 
-CHANGED="changed-containers.txt"
+echo "🚀 Starting changed containers..."
 
-for i in $(seq 1 5); do
-  if grep -q "^$i$" "$CHANGED"; then
-    PORT=$((8080 + i))
-    IMG="my-docker-image-$i"
-    CONTAINER="my-container-$i"
+if [ ! -f changed-containers.txt ] || [ ! -s changed-containers.txt ]; then
+  echo "ℹ️ No changed containers to run."
+  exit 0
+fi
 
-    echo "🚀 Starting $CONTAINER on port $PORT..."
-    docker run -d -p "$PORT":80 --name "$CONTAINER" "$IMG"
-  else
-    echo "⏭ Skipping container $i — image unchanged."
-  fi
-done
+while read i; do
+  IMAGE="my-docker-image-$i"
+  CONTAINER="my-container-$i"
+  PORT=$((8080 + i))
+
+  echo "🔧 Running $CONTAINER from $IMAGE on port $PORT..."
+
+  docker run -d -p "$PORT:80" --name "$CONTAINER" "$IMAGE"
+done < changed-containers.txt
+
+echo "✅ All changed containers are up."

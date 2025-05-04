@@ -24,4 +24,14 @@ for FOLDER in $HTML_DIRS; do
     i=$((i+1))
 done
 
-echo "📄 All hashes written to $HASH_FILE"
+## Build old-red-stream PHP app
+IMAGE_NAME="my-docker-image-6"
+APP_DIR="php-app"  # or '.' if it’s in root
+
+echo "🔨 Building $IMAGE_NAME from $APP_DIR..."
+docker build -t "$IMAGE_NAME" "$APP_DIR"
+
+IMAGE_ID=$(docker images --no-trunc --format '{{.Repository}} {{.ID}}' | grep "^$IMAGE_NAME " | awk '{print $2}')
+echo "$IMAGE_NAME: $IMAGE_ID" >> "$HASH_FILE"
+echo "✅ Wrote hash for $IMAGE_NAME"
+
