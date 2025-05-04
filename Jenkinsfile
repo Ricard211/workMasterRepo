@@ -52,6 +52,16 @@ pipeline {
             }
         }
 
+        stage('Check Git Changes') {
+            steps {
+                script {
+                def changes = sh(script: 'git diff --name-only HEAD~1 HEAD', returnStdout: true).trim()
+                echo "Changed files:\n${changes}"
+                }
+            }
+        }
+
+
         stage('Run DAST (OWASP ZAP Full Scan)') {
             steps {
                 echo "🌐 Scanning only changed containers..."
