@@ -2,22 +2,42 @@ pipeline {
     agent any
 
     stages {
-        stage('Run SAST (Semgrep)') {
+        stage('Check Git Changes') {
             steps {
-                echo "🔐 Running Semgrep (custom + OWASP) on src/html1 to html5..."
+                script {
+                def changes = sh(script: 'git diff --name-only HEAD~1 HEAD', returnStdout: true).trim()
+                echo "Changed files:\n${changes}"
+                }
+            }
+        }
+
+        stage('Run SAST (Semgrep - Changed Files Only)') {
+            steps {
+                echo "🔐 Running Semgrep only on changed files in the project..."
 
                 sh '''
-                    mkdir -p reports
+                mkdir -p reports
 
-                    docker run --rm -v $PWD:/src returntocorp/semgrep semgrep \
-                        scan \
-                        --config=/src/.semgrep.yml \
-                        --config=p/owasp-top-ten \
-                        --json \
-                        --output /src/reports/semgrep-report.json \
-                        /src/src/html1 /src/src/html2 /src/src/html3 /src/src/html4 /src/src/html5 || true
+                # Get changed files (entire project)
+                CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep -E '\\.js$|\\.ts$|\\.py$|\\.html$|\\.sh$' || true)
 
-                    bash convert_semgrep_report.sh
+                if [ -z "$CHANGED_FILES" ]; then
+                    echo "🟢 No changed source files to scan with Semgrep."
+                    echo '{"results":[]}' > reports/semgrep-report.json
+                else
+                    echo "📂 Scanning changed files:"
+                    echo "$CHANGED_FILES"
+
+                    docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep \
+                    scan \
+                    --config=/src/.semgrep.yml \
+                    --config=p/owasp-top-ten \
+                    --json \
+                    --output /src/reports/semgrep-report.json \
+                    $CHANGED_FILES || true
+                fi
+
+                bash convert_semgrep_report.sh
                 '''
             }
         }
@@ -51,16 +71,6 @@ pipeline {
                 sh 'bash run_containers.sh'
             }
         }
-
-        stage('Check Git Changes') {
-            steps {
-                script {
-                def changes = sh(script: 'git diff --name-only HEAD~1 HEAD', returnStdout: true).trim()
-                echo "Changed files:\n${changes}"
-                }
-            }
-        }
-
 
         stage('Run DAST (OWASP ZAP Full Scan)') {
             steps {
