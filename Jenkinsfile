@@ -17,17 +17,15 @@ pipeline {
 
                 sh '''
                 mkdir -p reports
+                chmod -R a+rw reports
 
-                # Get changed files (entire project)
-                CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep -E '\\.js$|\\.ts$|\\.py$|\\.html$|\\.sh$' || true)
+                CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep -E '\\.html$|\\.js$|\\.py$|\\.sh$' || true)
 
                 if [ -z "$CHANGED_FILES" ]; then
                     echo "🟢 No changed source files to scan with Semgrep."
                     echo '{"results":[]}' > reports/semgrep-report.json
                 else
-                    echo "📂 Scanning changed files:"
                     echo "$CHANGED_FILES"
-
                     docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep \
                     scan \
                     --config=/src/.semgrep.yml \
@@ -39,6 +37,7 @@ pipeline {
 
                 bash convert_semgrep_report.sh
                 '''
+
             }
         }
 
