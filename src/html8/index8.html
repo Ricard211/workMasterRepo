@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Listings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header, footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        nav {
+            background-color: #34495e;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 1rem;
+            text-decoration: none;
+        }
+        .listings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        .listing {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            text-align: center;
+            width: 300px;
+        }
+        .listing img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .contact {
+            margin: 1rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Dream Homes</h1>
+    </header>
+    <nav>
+        <a href="#listings">Listings</a>
+        <a href="#contact">Contact Us</a>
+    </nav>
+    <main>
+        <section id="listings" class="listings">
+            <div class="listing">
+                <img src="https://via.placeholder.com/300x200" alt="House 1">
+                <h2>Modern Family Home</h2>
+                <p>Price: $350,000</p>
+                <p>Location: Springfield</p>
+                <button onclick="inquire('Modern Family Home')">Inquire</button>
+            </div>
+            <div class="listing">
+                <img src="https://via.placeholder.com/300x200" alt="House 2">
+                <h2>Luxury Villa</h2>
+                <p>Price: $1,200,000</p>
+                <p>Location: Beverly Hills</p>
+                <button onclick="inquire('Luxury Villa')">Inquire</button>
+            </div>
+            <div class="listing">
+                <img src="https://via.placeholder.com/300x200" alt="House 2">
+                <h2>Luxury Villa</h2>
+                <p>Price: $1,200,000</p>
+                <p>Location: Beverly Hills</p>
+                <button onclick="inquire('Luxury Villa')">Inquire</button>
+            </div><div class="listing">
+                <img src="https://via.placeholder.com/300x200" alt="House 2">
+                <h2>Luxury Villa</h2>
+                <p>Price: $1,200,000</p>
+                <p>Location: Beverly Hills</p>
+                <button onclick="inquire('Luxury Villa')">Inquire</button>
+            </div>
+        </section>
+        <section id="contact" class="contact">
+            <h2>Contact Us</h2>
+            <p>Email: info@dreamhomes.com</p>
+            <p>Phone: +1 234 567 890</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Dream Homes</p>
+    </footer>
+    <script>
+        function inquire(houseName) {
+            alert(`Thank you for your interest in ${houseName}. We will contact you shortly!`);
+        }
+    </script>
+</body>
+</html>
