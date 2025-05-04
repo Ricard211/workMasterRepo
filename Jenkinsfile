@@ -16,6 +16,8 @@ pipeline {
                 echo "🔐 Running Semgrep only on changed files in the project..."
 
                 sh '''
+                # Clean up and re-create the Semgrep output dir
+                rm -rf reports/semgrep
                 mkdir -p reports/semgrep
 
                 CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep -E '\\.html$|\\.js$|\\.py$|\\.sh$' || true)
@@ -38,6 +40,7 @@ pipeline {
 
                 bash convert_semgrep_report.sh
                 '''
+
             }
         }
 
