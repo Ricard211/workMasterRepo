@@ -53,6 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Check if form is submitted
                     <th>District</th>
                     <th>Area</th>
                     <th>Landmark</th>
+                    <th>Landmark</th>
+                    <th>Landmark</th>
                 </tr>
             </thead>
             <tbody>
