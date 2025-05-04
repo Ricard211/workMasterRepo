@@ -126,7 +126,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: 'image-hash.txt', fingerprint: true
             archiveArtifacts artifacts: 'reports/semgrep/semgrep-report.json'
-            archiveArtifacts artifacts: 'reports/semgrep/semgrep-report.html'
+            archiveArtifacts artifacts: 'reports/semgrep-report.html'
             archiveArtifacts artifacts: 'reports/security-report.html'
             archiveArtifacts artifacts: 'reports/zap-report-combined.json'
         }
