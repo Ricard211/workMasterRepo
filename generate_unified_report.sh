@@ -2,7 +2,7 @@
 set -e
 
 OUTPUT="reports/security-report.html"
-SEMGREP="reports/semgrep-report.json"
+SEMGREP="reports/semgrep/semgrep-report.json"
 ZAP_COMBINED="reports/zap-report-combined.json"
 
 echo "🔧 Generating unified security report..."

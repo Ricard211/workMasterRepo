@@ -16,28 +16,28 @@ pipeline {
                 echo "🔐 Running Semgrep only on changed files in the project..."
 
                 sh '''
-                mkdir -p reports
-                chmod -R a+rw reports
+                mkdir -p reports/semgrep
 
                 CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep -E '\\.html$|\\.js$|\\.py$|\\.sh$' || true)
 
                 if [ -z "$CHANGED_FILES" ]; then
                     echo "🟢 No changed source files to scan with Semgrep."
-                    echo '{"results":[]}' > reports/semgrep-report.json
+                    echo '{"results":[]}' > reports/semgrep/semgrep-report.json
                 else
+                    echo "📂 Scanning changed files:"
                     echo "$CHANGED_FILES"
+
                     docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep \
                     scan \
                     --config=/src/.semgrep.yml \
                     --config=p/owasp-top-ten \
                     --json \
-                    --output /src/reports/semgrep-report.json \
+                    --output /src/reports/semgrep/semgrep-report.json \
                     $CHANGED_FILES || true
                 fi
 
                 bash convert_semgrep_report.sh
                 '''
-
             }
         }
 
@@ -125,8 +125,8 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'image-hash.txt', fingerprint: true
-            archiveArtifacts artifacts: 'reports/semgrep-report.json'
-            archiveArtifacts artifacts: 'reports/semgrep-report.html'
+            archiveArtifacts artifacts: 'reports/semgrep/semgrep-report.json'
+            archiveArtifacts artifacts: 'reports/semgrep/semgrep-report.html'
             archiveArtifacts artifacts: 'reports/security-report.html'
             archiveArtifacts artifacts: 'reports/zap-report-combined.json'
         }
