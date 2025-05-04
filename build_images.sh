@@ -13,7 +13,9 @@ for FOLDER in $HTML_DIRS; do
     IMAGE_NAME="my-docker-image-$i"
 
     echo "🔨 Building $IMAGE_NAME from $FOLDER..."
-    docker build -t "$IMAGE_NAME" --build-arg APP_DIR=$FOLDER .
+    docker build -t "$IMAGE_NAME" \
+        --build-arg APP_DIR=$FOLDER \
+        -f Dockerfile .
 
     IMAGE_ID=$(docker images --no-trunc --format '{{.Repository}} {{.ID}}' | grep "^$IMAGE_NAME " | awk '{print $2}')
     echo "$IMAGE_NAME: $IMAGE_ID" >> "$HASH_FILE"
