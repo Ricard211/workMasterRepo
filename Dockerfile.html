@@ -1,7 +1,4 @@
-# Dockerfile.html
 FROM nginx:alpine
-
 COPY . /usr/share/nginx/html/
 RUN chmod -R a+rx /usr/share/nginx/html
-
 EXPOSE 80
