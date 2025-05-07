@@ -11,11 +11,39 @@ pipeline {
             }
         }
 
-        stage('Run SAST (Semgrep - Changed Files Only)') {
+        stage('Run SAST (Semgrep on changed files)') {
             steps {
-                sh 'bash run_sast.sh'
+                sh '''
+                    # 1. Capture changed files between this commit and the last successful build
+                    git diff --name-only origin/${GIT_PREVIOUS_SUCCESSFUL_COMMIT} HEAD \
+                        > changed-files.txt
+
+                    # 2. Filter to code files
+                    CHANGED=$(grep -E '\\.(php|html|js|py|sh)$' changed-files.txt || true)
+
+                    mkdir -p reports/semgrep
+
+                    if [ -z "$CHANGED" ]; then
+                        echo "🟢 No changed source files to scan with Semgrep."
+                        # Write a valid empty JSON so later stages don't break
+                        echo '{"results":[]}' > reports/semgrep/semgrep-report.json
+                    else
+                        echo "📂 Running Semgrep on changed files:"
+                        echo "$CHANGED"
+
+                        docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep scan \
+                        --config=/src/.semgrep.yml \
+                        --config=p/owasp-top-ten \
+                        --json --output /src/reports/semgrep/semgrep-report.json \
+                        $CHANGED || true
+                    fi
+
+                    # (Optional) Convert to HTML if you still need it
+                    bash convert_semgrep_report.sh reports/semgrep/semgrep-report.json
+                '''
             }
         }
+
 
         stage('Build Docker images') {
             steps {
