@@ -46,3 +46,264 @@ rules:
     metadata:
       category: security
       cwe: "CWE-524: Use of Cacheable Password Forms"
+
+  - id: insecure-iframe
+    message: "Avoid using <iframe> without sandbox attribute — this can lead to clickjacking."
+    severity: WARNING
+    languages: [html]
+    pattern: '<iframe>'
+    metadata:
+      category: security
+      cwe: "CWE-1021: Improper Restriction of Rendered UI Layers or Frames"
+
+  - id: mixed-content
+    message: "Avoid mixed content (HTTP and HTTPS) — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'http://*'
+    metadata:
+      category: security
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+    
+  - id: insecure-cookies
+    message: "Cookies should have Secure and HttpOnly flags set."
+    severity: WARNING
+    languages: [html]
+    pattern: 'Set-Cookie:'
+    metadata:
+      category: security
+      cwe: "CWE-1004: Sensitive Cookie in HTTPS Session Without 'Secure' Attribute"
+
+  - id: insecure-headers
+    message: "HTTP headers should be set to prevent XSS and content sniffing."
+    severity: WARNING
+    languages: [html]
+    pattern: 'X-Content-Type-Options: nosniff'
+    metadata:
+      category: security
+      cwe: "CWE-16: Configuration"
+
+  - id: insecure-csp
+    message: "Content Security Policy (CSP) should be set to prevent XSS."
+    severity: WARNING
+    languages: [html]
+    pattern: 'Content-Security-Policy:'
+    metadata:
+      category: security
+      cwe: "CWE-16: Configuration"
+
+  - id: insecure-ssl
+    message: "SSL/TLS should be enforced for all pages."
+    severity: WARNING
+    languages: [html]
+    pattern: 'http://*'
+    metadata:
+      category: security
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+
+  - id: insecure-redirect
+    message: "Avoid open redirects — validate redirect URLs."
+    severity: WARNING
+    languages: [html]
+    pattern: 'window.location.href'
+    metadata:
+      category: security
+      cwe: "CWE-601: URL Redirection to Untrusted Site ('Open Redirect')"
+
+  - id: insecure-xml
+    message: "Avoid using XML without proper validation — this can lead to XXE vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: '<xml>'
+    metadata:
+      category: security
+      cwe: "CWE-611: Improper Restriction of XML External Entity Reference"
+
+  - id: insecure-json
+    message: "Avoid using JSON without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: '<json>'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-ajax
+    message: "Avoid using AJAX without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+      
+  - id: insecure-local-storage
+    message: "Avoid using local storage for sensitive data — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'localStorage'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-session-storage
+    message: "Avoid using session storage for sensitive data — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'sessionStorage'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-cookie-storage
+    message: "Avoid using cookies for sensitive data — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'document.cookie'
+    metadata:
+      category: security
+      cwe: "CWE-1004: Sensitive Cookie in HTTPS Session Without 'Secure' Attribute"
+
+  - id: insecure-url
+    message: "Avoid using URLs without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'window.location.href'
+    metadata:
+      category: security
+      cwe: "CWE-601: URL Redirection to Untrusted Site ('Open Redirect')"
+
+  - id: insecure-redirect
+    message: "Avoid using redirects without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'window.location.replace'
+    metadata:
+      category: security
+      cwe: "CWE-601: URL Redirection to Untrusted Site ('Open Redirect')"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch  
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+      
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
