@@ -20,8 +20,11 @@ fi
 # 4. List changed files between BASE and HEAD
 git diff --name-only "$BASE" HEAD -- > changed-files.txt
 
-# 5. Filter for the extensions you want to scan
-CHANGED=$(grep -E '\.(php|html|js|py|sh)$' changed-files.txt || true)
+# 5. Filter to only source under src/ or php-app/
+CHANGED=$(
+  grep -E '^(src/.*\.(php|html|js|py|sh)|php-app/.*\.php)$' changed-files.txt \
+    || true
+)
 
 # 6. If nothing changed, emit an empty Semgrep JSON
 if [ -z "$CHANGED" ]; then
@@ -33,6 +36,7 @@ else
 
   docker run --rm \
     -u "$(id -u):$(id -g)" \
+    -e HOME=/src \
     -v "$PWD:/src" \
     returntocorp/semgrep semgrep scan \
       --config=/src/.semgrep.yml \
