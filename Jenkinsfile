@@ -14,7 +14,7 @@ pipeline {
         stage('Run SAST (Semgrep on changed files)') {
             steps {
                 sh '''
-                # Determine the “base” for diff
+                # determine which commit to diff against
                 PREV_COMMIT="${GIT_PREVIOUS_SUCCESSFUL_COMMIT:-}"
                 if [ -n "$PREV_COMMIT" ] && git rev-parse --verify "$PREV_COMMIT" >/dev/null 2>&1; then
                     BASE="$PREV_COMMIT"
@@ -23,54 +23,56 @@ pipeline {
                     BASE="HEAD~1"
                 fi
 
-                # List changed files between BASE and HEAD
+                # compute changed files
                 git diff --name-only "$BASE" HEAD -- > changed-files.txt
-
-                # Filter to source extensions
                 CHANGED=$(grep -E '\\.(php|html|js|py|sh)$' changed-files.txt || true)
-
+                
+                # prepare semgrep output directory
                 mkdir -p reports/semgrep
+                chmod -R a+rwX reports/semgrep
 
                 if [ -z "$CHANGED" ]; then
                     echo "🟢 No changed source files to scan with Semgrep."
-                    # Write an empty but valid Semgrep JSON
                     echo '{"results":[]}' > reports/semgrep/semgrep-report.json
                 else
                     echo "📂 Running Semgrep on changed files:"
                     echo "$CHANGED"
 
-                    docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep scan \
-                    --config=/src/.semgrep.yml \
-                    --config=p/owasp-top-ten \
-                    --config=r/all \
-                    --config=r/security-audit \
-                    --config=r/ci-cd \
-                    --config=r/ci-cd-aws \
-                    --config=r/ci-cd-gcp \
-                    --config=r/ci-cd-azure \
-                    --config=r/ci-cd-azure-pipelines \
-                    --config=r/ci-cd-azure-pipelines-2 \
-                    --config=r/ci-cd-azure-devops \
-                    --config=r/ci-cd-azure-devops-2 \
-                    --config=r/ci-cd-github-actions \
-                    --config=r/ci-cd-gitlab-ci \
-                    --config=r/ci-cd-gitlab-ci-2 \
-                    --config=r/ci-cd-jenkins \
-                    --config=r/ci-cd-jenkinsfile \
-                    --config=r/ci-cd-jenkinsfile-2 \
-                    --config=r/ci-cd-jenkinsfile-3 \
-                    --config=r/ci-cd-jenkinsfile-4 \
-                    --config=r/ci-cd-jenkinsfile-5 \
-
-                    --json --output /src/reports/semgrep/semgrep-report.json \
-                    $CHANGED || true
+                    docker run --rm \
+                    -u "$(id -u):$(id -g)" \
+                    -v "$PWD:/src" \
+                    returntocorp/semgrep semgrep scan \
+                        --config=/src/.semgrep.yml \
+                        --config=p/owasp-top-ten \
+                        --config=r/all \
+                        --config=r/security-audit \
+                        --config=r/ci-cd \
+                        --config=r/ci-cd-aws \
+                        --config=r/ci-cd-gcp \
+                        --config=r/ci-cd-azure \
+                        --config=r/ci-cd-azure-pipelines \
+                        --config=r/ci-cd-azure-pipelines-2 \
+                        --config=r/ci-cd-azure-devops \
+                        --config=r/ci-cd-azure-devops-2 \
+                        --config=r/ci-cd-github-actions \
+                        --config=r/ci-cd-gitlab-ci \
+                        --config=r/ci-cd-gitlab-ci-2 \
+                        --config=r/ci-cd-jenkins \
+                        --config=r/ci-cd-jenkinsfile \
+                        --config=r/ci-cd-jenkinsfile-2 \
+                        --config=r/ci-cd-jenkinsfile-3 \
+                        --config=r/ci-cd-jenkinsfile-4 \
+                        --config=r/ci-cd-jenkinsfile-5 \
+                        --json --output /src/reports/semgrep/semgrep-report.json \
+                        $CHANGED || true
                 fi
 
-                # Convert JSON to HTML if needed
+                # convert to HTML for human-readable reporting
                 bash convert_semgrep_report.sh reports/semgrep/semgrep-report.json
                 '''
             }
-        }
+}
+
         
         stage('Build Docker images') {
             steps {
