@@ -298,12 +298,750 @@ rules:
     metadata:
       category: security
       cwe: "CWE-20: Improper Input Validation"
-      
+
   - id: insecure-xmlhttprequest
     message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
     severity: WARNING
     languages: [html]
     pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+    
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+    
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+    
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-jsonp
+    message: "Avoid using JSONP without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'JSONP'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-xmlhttprequest
+    message: "Avoid using XMLHttpRequest without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'XMLHttpRequest'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-fetch
+    message: "Avoid using fetch without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'fetch'
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  - id: insecure-websocket
+    message: "Avoid using WebSocket without proper validation — this can lead to security vulnerabilities."
+    severity: WARNING
+    languages: [html]
+    pattern: 'WebSocket'
     metadata:
       category: security
       cwe: "CWE-20: Improper Input Validation"
