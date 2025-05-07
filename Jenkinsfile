@@ -14,37 +14,44 @@ pipeline {
         stage('Run SAST (Semgrep on changed files)') {
             steps {
                 sh '''
-                    # 1. Capture changed files between this commit and the last successful build
-                    git diff --name-only origin/${GIT_PREVIOUS_SUCCESSFUL_COMMIT} HEAD \
-                        > changed-files.txt
+                # Determine the “base” for diff
+                PREV_COMMIT="${GIT_PREVIOUS_SUCCESSFUL_COMMIT:-}"
+                if [ -n "$PREV_COMMIT" ] && git rev-parse --verify "$PREV_COMMIT" >/dev/null 2>&1; then
+                    BASE="$PREV_COMMIT"
+                else
+                    echo "⚠️ Previous commit not found; falling back to HEAD~1"
+                    BASE="HEAD~1"
+                fi
 
-                    # 2. Filter to code files
-                    CHANGED=$(grep -E '\\.(php|html|js|py|sh)$' changed-files.txt || true)
+                # List changed files between BASE and HEAD
+                git diff --name-only "$BASE" HEAD -- > changed-files.txt
 
-                    mkdir -p reports/semgrep
+                # Filter to source extensions
+                CHANGED=$(grep -E '\\.(php|html|js|py|sh)$' changed-files.txt || true)
 
-                    if [ -z "$CHANGED" ]; then
-                        echo "🟢 No changed source files to scan with Semgrep."
-                        # Write a valid empty JSON so later stages don't break
-                        echo '{"results":[]}' > reports/semgrep/semgrep-report.json
-                    else
-                        echo "📂 Running Semgrep on changed files:"
-                        echo "$CHANGED"
+                mkdir -p reports/semgrep
 
-                        docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep scan \
-                        --config=/src/.semgrep.yml \
-                        --config=p/owasp-top-ten \
-                        --json --output /src/reports/semgrep/semgrep-report.json \
-                        $CHANGED || true
-                    fi
+                if [ -z "$CHANGED" ]; then
+                    echo "🟢 No changed source files to scan with Semgrep."
+                    # Write an empty but valid Semgrep JSON
+                    echo '{"results":[]}' > reports/semgrep/semgrep-report.json
+                else
+                    echo "📂 Running Semgrep on changed files:"
+                    echo "$CHANGED"
 
-                    # (Optional) Convert to HTML if you still need it
-                    bash convert_semgrep_report.sh reports/semgrep/semgrep-report.json
+                    docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep scan \
+                    --config=/src/.semgrep.yml \
+                    --config=p/owasp-top-ten \
+                    --json --output /src/reports/semgrep/semgrep-report.json \
+                    $CHANGED || true
+                fi
+
+                # Convert JSON to HTML if needed
+                bash convert_semgrep_report.sh reports/semgrep/semgrep-report.json
                 '''
             }
         }
-
-
+        
         stage('Build Docker images') {
             steps {
                 sh 'bash build_images.sh'
