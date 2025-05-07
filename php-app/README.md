@@ -6,7 +6,7 @@ The old version of project redstream website with basic functions implemented. N
 
 
 
-This is a web template that I have created and made available for private use. Please note the licensing terms before using this template.
+This is a web ttemplate that I have created and made available for private use. Please note the licensing terms before using this template.
 
 ## License
 

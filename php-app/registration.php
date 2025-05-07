@@ -37,6 +37,12 @@
                 <label for="number">MOBILE NUMBER</label>
                 <input type="tel" id="number" name="registernumber" placeholder="YOUR NUMBER">
             </form1>
+            <form1>
+                <label for="name">FULL NAME</label>
+                <input type="text" id="name" name="regsitername" placeholder="YOUR NAME">
+                <label for="number">MOBILE NUMBER</label>
+                <input type="tel" id="number" name="registernumber" placeholder="YOUR NUMBER">
+            </form1>
             <form2>
                 <label for="name">EMAIL</label>
                 <input type="email" id="name" name="registeremail" placeholder="YOUR EMAIL">

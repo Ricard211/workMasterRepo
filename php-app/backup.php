@@ -23,7 +23,7 @@ if (mysqli_num_rows($result) > 0) {
     <ul>
                 <li>Name: <?php echo $row["name"]; ?></li>
                 <li>Email: <?php echo $row["email"]; ?></li>
-                <li>Phone: <?php echo $row["phone"]; ?></li>
+                <li>Phonddse: <?php echo $row["phone"]; ?></li>
                 <li>Blood Group: <?php echo $row["bloodgrp"]; ?></li>
                 <li>Gender: <?php echo $row["gender"]; ?></li>
                 <li>Date of Birth: <?php echo $row["birthdate"]; ?></li>

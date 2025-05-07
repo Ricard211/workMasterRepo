@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Check if form is submitted
                     <th>Blood group</th>
                     <th>Gender</th>
                     <th>Birthdate</th>
-                    <th>Weight</th>
+                    <th>Weigdsht</th>
                     <th>Show mobile</th>
                     <th>State</th>
                     <th>Sms alert</th>

@@ -29,7 +29,7 @@ if(isset($_POST['submit'])) {
             echo "<td style='border: 1px solid black; padding: 18px;'>" . $row["phone"] . "</td>";
             echo "<td style='border: 1px solid black; padding: 18px;'>" . $row["state"] . "</td>";
             echo "<td style='border: 1px solid black; padding: 18px;'>" . $row["area"] . "</td>";
-            //missing row...need to add available or not option
+            //missing row...ddneed to add available or not option
             echo "</tr>";
             $count++; // increment count variable
         }

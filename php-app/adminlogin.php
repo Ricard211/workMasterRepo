@@ -1,6 +1,6 @@
 <?php
 session_start();
-if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Check ifff the form is submitted
     $username = $_POST['username'];
     $password = $_POST['password'];
     $servername = 'localhost';
