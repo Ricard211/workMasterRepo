@@ -13,34 +13,7 @@ pipeline {
 
         stage('Run SAST (Semgrep - Changed Files Only)') {
             steps {
-                echo "🔐 Running Semgrep only on changed files in the project..."
-
-                sh '''
-                # Clean up and re-create the Semgrep output dir
-                rm -rf reports/semgrep
-                mkdir -p reports/semgrep
-
-                CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep -E '\\.html$|\\.js$|\\.py$|\\.sh$' || true)
-
-                if [ -z "$CHANGED_FILES" ]; then
-                    echo "🟢 No changed source files to scan with Semgrep."
-                    echo '{"results":[]}' > reports/semgrep/semgrep-report.json
-                else
-                    echo "📂 Scanning changed files:"
-                    echo "$CHANGED_FILES"
-
-                    docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep \
-                    scan \
-                    --config=/src/.semgrep.yml \
-                    --config=p/owasp-top-ten \
-                    --json \
-                    --output /src/reports/semgrep/semgrep-report.json \
-                    $CHANGED_FILES || true
-                fi
-
-                bash convert_semgrep_report.sh
-                '''
-
+                sh 'bash run_sast.sh'
             }
         }
 
@@ -132,6 +105,7 @@ pipeline {
             archiveArtifacts artifacts: 'reports/semgrep-report.html'
             archiveArtifacts artifacts: 'reports/security-report.html'
             archiveArtifacts artifacts: 'reports/zap-report-combined.json'
+            archiveArtifacts artifacts: 'reports/sast/**/*.*', allowEmptyArchive: true
         }
     }
 }
