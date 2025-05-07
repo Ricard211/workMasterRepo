@@ -43,6 +43,25 @@ pipeline {
                     --config=/src/.semgrep.yml \
                     --config=p/owasp-top-ten \
                     --config=r/all \
+                    --config=r/security-audit \
+                    --config=r/ci-cd \
+                    --config=r/ci-cd-aws \
+                    --config=r/ci-cd-gcp \
+                    --config=r/ci-cd-azure \
+                    --config=r/ci-cd-azure-pipelines \
+                    --config=r/ci-cd-azure-pipelines-2 \
+                    --config=r/ci-cd-azure-devops \
+                    --config=r/ci-cd-azure-devops-2 \
+                    --config=r/ci-cd-github-actions \
+                    --config=r/ci-cd-gitlab-ci \
+                    --config=r/ci-cd-gitlab-ci-2 \
+                    --config=r/ci-cd-jenkins \
+                    --config=r/ci-cd-jenkinsfile \
+                    --config=r/ci-cd-jenkinsfile-2 \
+                    --config=r/ci-cd-jenkinsfile-3 \
+                    --config=r/ci-cd-jenkinsfile-4 \
+                    --config=r/ci-cd-jenkinsfile-5 \
+
                     --json --output /src/reports/semgrep/semgrep-report.json \
                     $CHANGED || true
                 fi
