@@ -42,6 +42,7 @@ pipeline {
                     docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep scan \
                     --config=/src/.semgrep.yml \
                     --config=p/owasp-top-ten \
+                    --config=r/all \
                     --json --output /src/reports/semgrep/semgrep-report.json \
                     $CHANGED || true
                 fi
