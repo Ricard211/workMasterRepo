@@ -14,14 +14,15 @@ pipeline {
         stage('Run Extended SAST Suite') {
             steps {
                 script {
-                // 1. Look up the CodeQL installation named "CodeQL" in Global Tool Config
+                // inject CodeQL into PATH as before
                 def codeqlHome = tool 'CodeQL'
-                // 2. Prepend its bin folder to PATH and run your script inside that env
                 withEnv(["PATH=${codeqlHome}/bin:${env.PATH}"]) {
-                    sh './run_sast.sh'
+                    // invoke the script via bash, not via exec bit
+                    sh 'bash run_sast.sh'
                 }
                 }
             }
         }
+
     }
 }
