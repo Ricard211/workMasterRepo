@@ -1,68 +1,62 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 1. Clean out any existing Semgrep reports
-rm -rf reports/semgrep
+SAST_DIR="reports/sast-full"
+rm -rf "$SAST_DIR"
+mkdir -p "$SAST_DIR"
+chmod a+rwX "$SAST_DIR"
 
-# 2. Recreate the reports directory with open permissions
-mkdir -p reports/semgrep
-chmod a+rwX reports/semgrep
+echo "🔐 Starting extended SAST suite…"
 
-# 3. Determine the Git base for diff
-PREV_COMMIT="${GIT_PREVIOUS_SUCCESSFUL_COMMIT:-}"
-if [ -n "$PREV_COMMIT" ] && git rev-parse --verify "$PREV_COMMIT" >/dev/null 2>&1; then
-  BASE="$PREV_COMMIT"
+echo "1️⃣ Semgrep: full repo, no-ignore, single job, all packs, metrics on"
+docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -e HOME=/src \
+  -v "$PWD:/src" \
+  returntocorp/semgrep semgrep scan \
+    --no-git-ignore \
+    --jobs 1 \
+    --metrics=on \
+    --config=/src/.semgrep.yml \
+    --config=p/owasp-top-ten \
+    --config=p/python \
+    --config=p/javascript \
+    --config=p/security-audit \
+    --config=p/ci-cd \
+    --config=p/ci-cd-aws \
+    --config=p/ci-cd-gcp \
+    --config=p/ci-cd-azure \
+    --config=p/dockerfile \
+    --config=p/kubernetes \
+    --config=p/terraform \
+    --config=p/secrets \
+    --config=p/coding-practices \
+    --json --output /src/"$SAST_DIR"/semgrep-full.json \
+    /src || true
+
+echo "2️⃣ Bandit: Python linting"
+if command -v bandit >/dev/null 2>&1; then
+  bandit -r . -f json -o "$SAST_DIR"/bandit-full.json || true
 else
-  echo "⚠️ Previous commit not found; falling back to HEAD~1"
-  BASE="HEAD~1"
+  echo "⚠️  Bandit not installed, skipping"
 fi
 
-# 4. List changed files between BASE and HEAD
-git diff --name-only "$BASE" HEAD -- > changed-files.txt
-
-# 5. Filter to only source under src/ or php-app/
-CHANGED=$(
-  grep -E '^(src/.*\.(php|html|js|py|sh)|php-app/.*\.php)$' changed-files.txt \
-    || true
-)
-
-# 6. If nothing changed, emit an empty Semgrep JSON
-if [ -z "$CHANGED" ]; then
-  echo "🟢 No changed source files to scan with Semgrep."
-  echo '{"results":[]}' > reports/semgrep/semgrep-report.json
+echo "3️⃣ CodeQL: PHP & JS deep analysis"
+if command -v codeql >/dev/null 2>&1; then
+  codeql database create codeql-full-db --language=php --language=javascript --source-root=.  
+  codeql database analyze codeql-full-db \
+    --format=sarif-latest \
+    --output="$SAST_DIR"/codeql-full.sarif \
+    --threads=1 || true
 else
-  echo "📂 Running Semgrep on changed files:"
-  echo "$CHANGED"
-
-  docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -e HOME=/src \
-    -v "$PWD:/src" \
-    returntocorp/semgrep semgrep scan \
-      --config=/src/.semgrep.yml \
-      --config=p/owasp-top-ten \
-      --config=r/all \
-      --config=r/security-audit \
-      --config=r/ci-cd \
-      --config=r/ci-cd-aws \
-      --config=r/ci-cd-gcp \
-      --config=r/ci-cd-azure \
-      --config=r/ci-cd-azure-pipelines \
-      --config=r/ci-cd-azure-pipelines-2 \
-      --config=r/ci-cd-azure-devops \
-      --config=r/ci-cd-azure-devops-2 \
-      --config=r/ci-cd-github-actions \
-      --config=r/ci-cd-gitlab-ci \
-      --config=r/ci-cd-gitlab-ci-2 \
-      --config=r/ci-cd-jenkins \
-      --config=r/ci-cd-jenkinsfile \
-      --config=r/ci-cd-jenkinsfile-2 \
-      --config=r/ci-cd-jenkinsfile-3 \
-      --config=r/ci-cd-jenkinsfile-4 \
-      --config=r/ci-cd-jenkinsfile-5 \
-      --json --output /src/reports/semgrep/semgrep-report.json \
-      $CHANGED || true
+  echo "⚠️  CodeQL CLI not installed, skipping"
 fi
 
-# 7. Convert JSON to HTML (if you have convert_semgrep_report.sh)
-bash convert_semgrep_report.sh reports/semgrep/semgrep-report.json
+echo "4️⃣ ESLint: JavaScript security"
+if command -v eslint >/dev/null 2>&1; then
+  eslint . --ext .js,.jsx --format json --output-file "$SAST_DIR"/eslint-full.json || true
+else
+  echo "⚠️  ESLint not installed, skipping"
+fi
+
+echo "✅ Extended SAST complete. Reports in $SAST_DIR"
