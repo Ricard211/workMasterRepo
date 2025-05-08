@@ -2,12 +2,15 @@
 set -euo pipefail
 
 SAST_DIR="reports/sast-full"
+
+echo "🔐 Starting extended SAST suite…"
+
+# Clean-up old reports
 rm -rf "$SAST_DIR"
 mkdir -p "$SAST_DIR"
 chmod a+rwX "$SAST_DIR"
 
-echo "🔐 Starting extended SAST suite…"
-
+# 1️⃣ Semgrep: full repo, no-ignore, single job, all packs, metrics on
 echo "1️⃣ Semgrep: full repo, no-ignore, single job, all packs, metrics on"
 docker run --rm \
   -u "$(id -u):$(id -g)" \
@@ -34,6 +37,7 @@ docker run --rm \
     --json --output /src/"$SAST_DIR"/semgrep-full.json \
     /src || true
 
+# 2️⃣ Bandit: Python linting
 echo "2️⃣ Bandit: Python linting"
 if command -v bandit >/dev/null 2>&1; then
   bandit -r . -f json -o "$SAST_DIR"/bandit-full.json || true
@@ -41,6 +45,7 @@ else
   echo "⚠️  Bandit not installed, skipping"
 fi
 
+# 3️⃣ CodeQL: PHP & JS deep analysis
 echo "3️⃣ CodeQL: PHP & JS deep analysis"
 if command -v codeql >/dev/null 2>&1; then
   codeql database create codeql-full-db --language=php --language=javascript --source-root=.  
@@ -52,6 +57,7 @@ else
   echo "⚠️  CodeQL CLI not installed, skipping"
 fi
 
+# 4️⃣ ESLint: JavaScript security
 echo "4️⃣ ESLint: JavaScript security"
 if command -v eslint >/dev/null 2>&1; then
   eslint . --ext .js,.jsx --format json --output-file "$SAST_DIR"/eslint-full.json || true
