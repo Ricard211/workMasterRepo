@@ -24,7 +24,7 @@ if ! command -v eslint >/dev/null 2>&1; then
   export PATH="$PWD/node_modules/.bin:$PATH"
 fi
 
-# 4. Semgrep full-repo scan
+# 4. Semgrep full‐repo scan
 echo "1️⃣ Semgrep: full repo, no-ignore, single job, all packs, metrics on"
 docker run --rm \
   -u "$(id -u):$(id -g)" \
@@ -55,34 +55,31 @@ docker run --rm \
 echo "2️⃣ Bandit: Python code analysis"
 bandit -r . -f json -o "$SAST_DIR"/bandit-full.json || true
 
-# 6. CodeQL for PHP & JS (local CLI or Docker fallback)
+# 6. CodeQL for PHP & JS via Microsoft’s container
 echo "3️⃣ CodeQL: PHP & JS deep dataflow analysis"
-CODEQL_IMAGE="ghcr.io/github/codeql-cli-binaries/codeql:2.25.2"
-if command -v codeql >/dev/null 2>&1; then
-  codeql database create codeql-db --language=php --language=javascript --source-root=.  
-  codeql database analyze codeql-db \
+CODEQL_IMAGE="mcr.microsoft.com/cstsectools/codeql-container:latest"
+
+# Pull the official CodeQL container
+docker pull "$CODEQL_IMAGE"
+
+# Create the CodeQL database
+docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -v "$PWD:/src" \
+  -w /src \
+  "$CODEQL_IMAGE" \
+  database create codeql-db --language=php --language=javascript --source-root=.
+
+# Analyze the database and emit SARIF
+docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -v "$PWD:/src" \
+  -w /src \
+  "$CODEQL_IMAGE" \
+  database analyze codeql-db \
     --format=sarif-latest \
     --output="$SAST_DIR"/codeql-full.sarif \
     --threads=1 || true
-else
-  echo "⚠️  Local CodeQL CLI not found; using Docker image $CODEQL_IMAGE"
-  docker pull "$CODEQL_IMAGE"
-  docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$PWD:/src" \
-    -w /src \
-    "$CODEQL_IMAGE" \
-    database create codeql-db --language=php --language=javascript --source-root=.
-  docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$PWD:/src" \
-    -w /src \
-    "$CODEQL_IMAGE" \
-    database analyze codeql-db \
-      --format=sarif-latest \
-      --output="$SAST_DIR"/codeql-full.sarif \
-      --threads=1 || true
-fi
 
 # 7. ESLint for JavaScript security
 echo "4️⃣ ESLint: JavaScript security linting"
