@@ -5,12 +5,26 @@ SAST_DIR="reports/sast-full"
 
 echo "🔐 Starting extended SAST suite…"
 
-# Clean-up old reports
+# 1. Clean out any old reports
 rm -rf "$SAST_DIR"
 mkdir -p "$SAST_DIR"
 chmod a+rwX "$SAST_DIR"
 
-# 1️⃣ Semgrep: full repo, no-ignore, single job, all packs, metrics on
+# 2. Bootstrap Bandit if missing
+if ! command -v bandit >/dev/null 2>&1; then
+  echo "Installing Bandit…"
+  pip3 install --user bandit
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
+# 3. Bootstrap ESLint if missing
+if ! command -v eslint >/dev/null 2>&1; then
+  echo "Installing ESLint…"
+  npm install --no-save eslint eslint-plugin-security
+  export PATH="$PWD/node_modules/.bin:$PATH"
+fi
+
+# 4. Semgrep full-repo scan
 echo "1️⃣ Semgrep: full repo, no-ignore, single job, all packs, metrics on"
 docker run --rm \
   -u "$(id -u):$(id -g)" \
@@ -37,32 +51,41 @@ docker run --rm \
     --json --output /src/"$SAST_DIR"/semgrep-full.json \
     /src || true
 
-# 2️⃣ Bandit: Python linting
-echo "2️⃣ Bandit: Python linting"
-if command -v bandit >/dev/null 2>&1; then
-  bandit -r . -f json -o "$SAST_DIR"/bandit-full.json || true
-else
-  echo "⚠️  Bandit not installed, skipping"
-fi
+# 5. Bandit for Python
+echo "2️⃣ Bandit: Python code analysis"
+bandit -r . -f json -o "$SAST_DIR"/bandit-full.json || true
 
-# 3️⃣ CodeQL: PHP & JS deep analysis
-echo "3️⃣ CodeQL: PHP & JS deep analysis"
+# 6. CodeQL for PHP & JS (local CLI or Docker fallback)
+echo "3️⃣ CodeQL: PHP & JS deep dataflow analysis"
+CODEQL_IMAGE="ghcr.io/github/codeql-cli-binaries/codeql:2.25.2"
 if command -v codeql >/dev/null 2>&1; then
-  codeql database create codeql-full-db --language=php --language=javascript --source-root=.  
-  codeql database analyze codeql-full-db \
+  codeql database create codeql-db --language=php --language=javascript --source-root=.  
+  codeql database analyze codeql-db \
     --format=sarif-latest \
     --output="$SAST_DIR"/codeql-full.sarif \
     --threads=1 || true
 else
-  echo "⚠️  CodeQL CLI not installed, skipping"
+  echo "⚠️  Local CodeQL CLI not found; using Docker image $CODEQL_IMAGE"
+  docker pull "$CODEQL_IMAGE"
+  docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$PWD:/src" \
+    -w /src \
+    "$CODEQL_IMAGE" \
+    database create codeql-db --language=php --language=javascript --source-root=.
+  docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$PWD:/src" \
+    -w /src \
+    "$CODEQL_IMAGE" \
+    database analyze codeql-db \
+      --format=sarif-latest \
+      --output="$SAST_DIR"/codeql-full.sarif \
+      --threads=1 || true
 fi
 
-# 4️⃣ ESLint: JavaScript security
-echo "4️⃣ ESLint: JavaScript security"
-if command -v eslint >/dev/null 2>&1; then
-  eslint . --ext .js,.jsx --format json --output-file "$SAST_DIR"/eslint-full.json || true
-else
-  echo "⚠️  ESLint not installed, skipping"
-fi
+# 7. ESLint for JavaScript security
+echo "4️⃣ ESLint: JavaScript security linting"
+eslint . --ext .js,.jsx --format json --output-file "$SAST_DIR"/eslint-full.json || true
 
 echo "✅ Extended SAST complete. Reports in $SAST_DIR"
