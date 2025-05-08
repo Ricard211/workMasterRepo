@@ -24,7 +24,7 @@ if ! command -v eslint >/dev/null 2>&1; then
   export PATH="$PWD/node_modules/.bin:$PATH"
 fi
 
-# 4. Semgrep full‐repo scan
+# 4. Semgrep full-repo scan
 echo "1️⃣ Semgrep: full repo, no-ignore, single job, all packs, metrics on"
 docker run --rm \
   -u "$(id -u):$(id -g)" \
@@ -55,31 +55,24 @@ docker run --rm \
 echo "2️⃣ Bandit: Python code analysis"
 bandit -r . -f json -o "$SAST_DIR"/bandit-full.json || true
 
-# 6. CodeQL for PHP & JS via Microsoft’s container
+# 6. Download & install CodeQL CLI if missing
 echo "3️⃣ CodeQL: PHP & JS deep dataflow analysis"
-CODEQL_IMAGE="mcr.microsoft.com/cstsectools/codeql-container:latest"
-
-# Pull the official CodeQL container
-docker pull "$CODEQL_IMAGE"
+if [ ! -x "./codeql/codeql" ]; then
+  echo "Downloading CodeQL CLI binary..."
+  curl -sSL https://github.com/github/codeql-cli-binaries/releases/download/v2.25.3/codeql-linux64.zip -o codeql.zip
+  unzip -q codeql.zip -d codeql
+  chmod +x codeql/codeql
+fi
+export PATH="$PWD/codeql:$PATH"
 
 # Create the CodeQL database
-docker run --rm \
-  -u "$(id -u):$(id -g)" \
-  -v "$PWD:/src" \
-  -w /src \
-  "$CODEQL_IMAGE" \
-  database create codeql-db --language=php --language=javascript --source-root=.
+codeql database create codeql-db --language=php --language=javascript --source-root=.  
 
 # Analyze the database and emit SARIF
-docker run --rm \
-  -u "$(id -u):$(id -g)" \
-  -v "$PWD:/src" \
-  -w /src \
-  "$CODEQL_IMAGE" \
-  database analyze codeql-db \
-    --format=sarif-latest \
-    --output="$SAST_DIR"/codeql-full.sarif \
-    --threads=1 || true
+codeql database analyze codeql-db \
+  --format=sarif-latest \
+  --output="$SAST_DIR"/codeql-full.sarif \
+  --threads=1 || true
 
 # 7. ESLint for JavaScript security
 echo "4️⃣ ESLint: JavaScript security linting"
