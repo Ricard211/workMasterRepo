@@ -55,20 +55,22 @@ docker run --rm \
 echo "2️⃣ Bandit: Python code analysis"
 bandit -r . -f json -o "$SAST_DIR"/bandit-full.json || true
 
-# 6. Download & install CodeQL CLI if missing
+# 6. CodeQL for PHP & JS via binary download
 echo "3️⃣ CodeQL: PHP & JS deep dataflow analysis"
 if [ ! -x "./codeql/codeql" ]; then
   echo "Downloading CodeQL CLI binary..."
-  curl -sSL https://github.com/github/codeql-cli-binaries/releases/download/v2.25.3/codeql-linux64.zip -o codeql.zip
+  curl -L https://github.com/github/codeql-cli-binaries/releases/download/v2.25.3/codeql.zip -o codeql.zip
+  mkdir -p codeql
   unzip -q codeql.zip -d codeql
+  rm codeql.zip
   chmod +x codeql/codeql
 fi
 export PATH="$PWD/codeql:$PATH"
 
-# Create the CodeQL database
+echo "Creating CodeQL database…"
 codeql database create codeql-db --language=php --language=javascript --source-root=.  
 
-# Analyze the database and emit SARIF
+echo "Analyzing with CodeQL…"
 codeql database analyze codeql-db \
   --format=sarif-latest \
   --output="$SAST_DIR"/codeql-full.sarif \
