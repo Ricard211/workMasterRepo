@@ -12,18 +12,17 @@ pipeline {
         }
 
         stage('Run Extended SAST Suite') {
-            steps {
-                script {
-                // Look up the CodeQL installation named “CodeQL” in Global Tool Config
-                // this returns its install directory, e.g. /var/jenkins_home/tools/CodeQL/2.25.3
-                def codeqlHome = tool name: 'CodeQL', type: 'com.github.codeql.jenkins.CodeQLInstallation'
-
-                // Prepend its bin/ directory to PATH so that `codeql` is found
-                withEnv(["PATH+CODEQL=${codeqlHome}/bin"]) {
-                    sh './run_sast.sh'
-                }
-                }
+            // 1) Look up the CodeQL tool by name and inject it into PATH
+            script {
+            // This name (“CodeQL”) must match exactly what you set under
+            // Manage Jenkins → Global Tool Configuration → CodeQL
+            def codeqlHome = tool 'CodeQL'
+            // Prepend its bin directory so `codeql` is on PATH
+            env.PATH = "${codeqlHome}/bin:${env.PATH}"
             }
+
+            // 2) Run your existing SAST script (which calls `codeql …`)
+            sh './run_sast.sh'
         }
 
     }
