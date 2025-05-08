@@ -1,7 +1,3 @@
-tools {
-  codeql 'CodeQL'
-}
-
 pipeline {
     agent any
 
