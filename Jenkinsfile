@@ -15,10 +15,20 @@ pipeline {
             }
         }
 
-        stage('Run SAST (Semgrep on changed files)') {
+        stage('Run Extended SAST Suite') {
             steps {
-                sh 'bash run_sast.sh'
+                script {
+                // Look up the CodeQL installation named “CodeQL” in Global Tool Config
+                // this returns its install directory, e.g. /var/jenkins_home/tools/CodeQL/2.25.3
+                def codeqlHome = tool name: 'CodeQL', type: 'com.github.codeql.jenkins.CodeQLInstallation'
+
+                // Prepend its bin/ directory to PATH so that `codeql` is found
+                withEnv(["PATH+CODEQL=${codeqlHome}/bin"]) {
+                    sh './run_sast.sh'
+                }
+                }
             }
         }
+
     }
 }
