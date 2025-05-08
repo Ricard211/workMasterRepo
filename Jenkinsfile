@@ -12,12 +12,15 @@ pipeline {
         }
 
         stage('Run Extended SAST Suite') {
-        steps {
-            // withCodeQL is provided by the CodeQL Jenkins plugin;
-            // it makes the CodeQL CLI available on PATH inside the block.
-            withCodeQL('CodeQL') {
-            sh './run_sast.sh'
-            }
+            steps {
+                script {
+                // 1. Look up the CodeQL installation named "CodeQL" in Global Tool Config
+                def codeqlHome = tool 'CodeQL'
+                // 2. Prepend its bin folder to PATH and run your script inside that env
+                withEnv(["PATH=${codeqlHome}/bin:${env.PATH}"]) {
+                    sh './run_sast.sh'
+                }
+                }
             }
         }
     }
