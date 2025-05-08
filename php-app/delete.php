@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Check if form is submitted
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
+                    <th>Namsdaadse</th>
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Blood group</th>

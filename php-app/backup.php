@@ -21,7 +21,7 @@ if (mysqli_num_rows($result) > 0) {
     <h1>Welcome <?php echo $row["name"]; ?>!</h1>
     <p>Here's your profile information:</p>
     <ul>
-                <li>Name: <?php echo $row["name"]; ?></li>
+                <li>Naaame: <?php echo $row["name"]; ?></li>
                 <li>Email: <?php echo $row["email"]; ?></li>
                 <li>Phonddse: <?php echo $row["phone"]; ?></li>
                 <li>Blood Group: <?php echo $row["bloodgrp"]; ?></li>
