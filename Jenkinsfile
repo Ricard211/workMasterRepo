@@ -11,7 +11,6 @@ pipeline {
             }
         }
 
-        stages {
             stage('Run Extended SAST Suite') {
                 steps {
                     // this step injects the CodeQL CLI into PATH for the block
@@ -21,6 +20,5 @@ pipeline {
                     }
                 }
             }
-        }
     }
 }
