@@ -11,21 +11,16 @@ pipeline {
             }
         }
 
-        stage('Run Extended SAST Suite') {
-            steps {
-                script {
-                // 1. Locate the CodeQL installation named “CodeQL” in Global Tool Configuration
-                def codeqlHome = tool 'CodeQL'
-
-                // 2. Invoke the script with CODEQL_HOME set, so run_sast.sh can find the binary
-                withEnv(["CODEQL_HOME=${codeqlHome}", "PATH+CODEQL=${codeqlHome}/bin"]) {
-                    // If your script isn’t executable, call via bash
+        stages {
+            stage('Run Extended SAST Suite') {
+                steps {
+                    // this step injects the CodeQL CLI into PATH for the block
+                    withCodeQL {
+                    // now codeql is on PATH, so run_sast.sh will find it
                     sh 'bash run_sast.sh'
-                }
+                    }
                 }
             }
         }
-
-
     }
 }

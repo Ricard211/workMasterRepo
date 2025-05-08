@@ -2,7 +2,6 @@
 set -euo pipefail
 
 SAST_DIR="reports/sast-full"
-CODEQL_HOME="${CODEQL_HOME:-}"
 
 echo "🔐 Starting extended SAST suite…"
 
@@ -56,24 +55,10 @@ docker run --rm \
 echo "2️⃣ Bandit: Python code analysis"
 bandit -r . -f json -o "$SAST_DIR"/bandit-full.json || true
 
-# 6. CodeQL for PHP & JS using CODEQL_HOME
+# 6. CodeQL for PHP & JS
 echo "3️⃣ CodeQL: PHP & JS deep dataflow analysis"
-if [ -z "$CODEQL_HOME" ]; then
-  echo "❌ CODEQL_HOME is not set. Please configure CodeQL in Jenkins and pass CODEQL_HOME."
-  exit 1
-fi
-
-CODEQL_BIN="$CODEQL_HOME/bin/codeql"
-if [ ! -x "$CODEQL_BIN" ]; then
-  echo "❌ $CODEQL_BIN does not exist or is not executable."
-  exit 1
-fi
-
-echo "Creating CodeQL database…"
-"$CODEQL_BIN" database create codeql-db --language=php --language=javascript --source-root=.  
-
-echo "Analyzing with CodeQL…"
-"$CODEQL_BIN" database analyze codeql-db \
+codeql database create codeql-db --language=php --language=javascript --source-root=.  
+codeql database analyze codeql-db \
   --format=sarif-latest \
   --output="$SAST_DIR"/codeql-full.sarif \
   --threads=1 || true
